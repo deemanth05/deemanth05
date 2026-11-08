@@ -1,0 +1,27 @@
+name: Update ASCII Card
+
+on:
+  schedule:
+    - cron: '0 0 * * *' 
+  workflow_dispatch:      
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest cards
+        run: |
+          curl -s "https://gh.crafter.run/api/card?u=deemanth05&theme=dark" -o dark_mode.svg
+          curl -s "https://gh.crafter.run/api/card?u=deemanth05&theme=light" -o light_mode.svg
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add dark_mode.svg light_mode.svg
+          git diff --staged --quiet || (git commit -m "chore: update ascii profile cards" && git push)
