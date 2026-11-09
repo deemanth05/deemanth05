@@ -2,8 +2,8 @@ name: Update ASCII Card
 
 on:
   schedule:
-    - cron: '0 0 * * *' 
-  workflow_dispatch:      
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+  workflow_dispatch:      # Allows manual trigger anytime
 
 permissions:
   contents: write
@@ -12,12 +12,13 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Fetch latest cards
         run: |
-          curl -s "https://gh.crafter.run/api/card?u=deemanth05&theme=dark" -o dark_mode.svg
-          curl -s "https://gh.crafter.run/api/card?u=deemanth05&theme=light" -o light_mode.svg
+          curl -f -L -A "Mozilla/5.0" "https://gh-ascii.crafter.run/api/card?u=deemanth05&theme=dark" -o dark_mode.svg
+          curl -f -L -A "Mozilla/5.0" "https://gh-ascii.crafter.run/api/card?u=deemanth05&theme=light" -o light_mode.svg
 
       - name: Commit and push changes
         run: |
